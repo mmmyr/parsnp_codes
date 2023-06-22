@@ -39,7 +39,7 @@ for seq_id in index:
 	idx=1
 	while idx < len(seq_id):
 		if seq_id[idx] == ':':
-                	num_index=idx
+			num_index=idx
 		if seq_id[idx] == '-':
 			coord1_index=idx
 		idx+=1
