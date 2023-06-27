@@ -2,11 +2,13 @@ import os
 from Bio import SeqIO
 import argparse
 import re
-# optimize the code
+
+#python validate-xmfa.py parsnp.xmfa ref/GCF_000219945.1_ASM21994v2_genomic.fna test/*.fa
+
 def compare(str1,str2):
     if len(str1) == len(str2):
         return False
-    else: #
+    else: 
         return all(ch1 == ch2 for (ch1, ch2) in filter(lambda pair: '-' not in pair, zip(str1, str2)))
 
 #parse CLI 
@@ -18,15 +20,16 @@ args = parser.parse_args()
 
 print(args.xmfa)
 print(args.ref)
-print(args.fna[0]) # this is a list 
+print(args.fna[0]) 
 directory_path = os.path.dirname(args.fna[0])
 print(directory_path)
 
-#parse headers 
-files = {}
+#read the file 
 with open(args.xmfa,'r') as file:
     contents = file.readlines()
 
+#parse headers 
+files = {}
 idx = 2 
 line = contents[idx]
 while line.startswith("##"):
@@ -41,10 +44,12 @@ while line.startswith("##"):
 print(files)
 
 #parse xmfa output 
-#improve this part afterwards 
 alignment = SeqIO.parse(args.xmfa, "fasta")
 for record in alignment:
-    #print (record.description)
+    #delete '=' from the end of sequence 
+    if record.seq.endswith('='):
+        record.seq = record.seq[:-1] 
+
     numbers = re.split(r'\D+', record.description)
     seq_num = int(numbers[0])
     coord1 = int(numbers[1])
@@ -68,3 +73,4 @@ for record in alignment:
                 print("match")
             else: 
                 print("unmatch")
+
