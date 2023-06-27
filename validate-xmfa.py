@@ -1,10 +1,8 @@
 import os
 from Bio import SeqIO
 import argparse
-# solve reference problem  - copy reference - alternative: make this as input - figure out the --flag / -flag thing 
+import re
 # optimize the code
-# convert it into mat format 
-
 def compare(str1,str2):
     if len(str1) == len(str2):
         return False
@@ -46,37 +44,19 @@ print(files)
 #improve this part afterwards 
 alignment = SeqIO.parse(args.xmfa, "fasta")
 for record in alignment:
-   # print(record.id) #5:2605645-2608743
-   # print(record.description) # + cluster1382 s46:p391742
-   #print(record.seq)   sequence
-    idx=0 
-    while idx < len(record.id):
-        if record.id[idx] == ':':
-            num_index=idx
-        if record.id[idx] == '-':
-            coord1_index=idx
-        idx+=1
-    coord2_index=len(record.id)
-    seq_num = int(record.id[0:num_index])
-    coord1 = int(record.id[num_index+1:coord1_index])
-    coord2 = int(record.id[coord1_index+1:coord2_index])
+    #print (record.description)
+    numbers = re.split(r'\D+', record.description)
+    seq_num = int(numbers[0])
+    coord1 = int(numbers[1])
+    coord2 = int (numbers[2])
+    mul_num = int(numbers[4])
+    start_coord = int(numbers[5])
     length = coord2 - coord1 + 1
-
-    idx=0
-    while idx < len(record.description):
-        if record.description[idx] == "s":
-            idx1=idx
-        if record.description[idx] == ":":
-            idx2=idx
-        idx+=1
-    mul_num = int(record.description[idx1+1:idx2])
-    start_coord = int(record.description[idx2+2:])
-    print(seq_num, coord1, coord2,mul_num,start_coord,length)
+    #print(seq_num, coord1, coord2,mul_num,start_coord,length)
 
     #read records from input file and make comparison 
     if seq_num == 1: 
         input_file = args.ref 
-        continue
     else: 
         input_file = directory_path + '/' + files[seq_num]
     rec_num=0
